@@ -43,7 +43,7 @@ void menuEliminar(){
     printf("Digite un opcion: ");
 }
 
-void createProgramingNotes(float ProgramingNotes[]){
+void crearNotas(float ProgramingNotes[]){
     int opcion,cantidad,agregar;
     opcion=1;
     while (opcion !=0 ){
@@ -182,7 +182,7 @@ void main(){
         scanf("%d", &opcion);
         switch (opcion){
             case 1:
-                createProgramingNotes(ProgramingNotes);
+                crearNotas(ProgramingNotes);
                 break;
             case 2:
                 verNotas(ProgramingNotes);
