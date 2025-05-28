@@ -1,5 +1,29 @@
 #include <stdio.h>
 
+typedef struct{
+    int DIA;
+    int MES;
+    int ANYO;
+} FECHA;
+
+typedef struct{
+    float PROGRAMACION;
+    float MATEMATICAS;
+    float LOGICA;
+    float TICS;
+} ASIGNATURAS;
+
+typedef struct{
+    FECHA fechaCorte;
+    //ESTUDIANTE Estudiante;
+    ASIGNATURAS notas;
+    float promedio;
+
+} INFORME;
+
+
+
+
 void menu(){
     printf("\n----- NOTAS PROGRAMACION -----\n");
     printf("1. Subir notas\n");
@@ -9,12 +33,19 @@ void menu(){
     printf("0. Salir\n\n");
     printf("Digite un opcion: ");
 }
+void menuAsignaturas(){
+    printf("1. Programacion\n");
+    printf("2. Matematicas\n");
+    printf("3. Desarrollo del Pensamiento Logico\n");
+    printf("4. Introduccion a las TICS\n");
+    printf("0. Volver atras\n\n");
+    printf("Digite un opcion: ");
+}
 
-void menuCreate(){
+void menuCrear(){
     printf("\n------------------------------\n");
     printf("1. Ingresar todas las notas\n");
-    printf("2. Ingresar una cantidad de notas\n");
-    printf("3. Seguir Ingresando notas\n");
+    printf("2. Ingresar ciertas notas\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
@@ -43,36 +74,52 @@ void menuEliminar(){
     printf("Digite un opcion: ");
 }
 
-void crearNotas(float ProgramingNotes[]){
-    int opcion,cantidad,agregar;
-    opcion=1;
+void crearNotas(){
+    int opcion=1,opcion2=1;
+    ASIGNATURAS asignaturas;
     while (opcion !=0 ){
-        menuCreate();
+        menuCrear();
         scanf("%d", &opcion);
         switch (opcion){
             case 1:
-                for(int contador=0; contador<34; contador++){
-                    printf("Ingrese la nota %d: ", contador+1);
-                    scanf("%f", &ProgramingNotes[contador]);
-                }
+                printf("Programacion: ");
+                scanf("%f", &asignaturas.PROGRAMACION);
+                printf("Matematicas: ");
+                scanf("%f", &asignaturas.MATEMATICAS);
+                printf("Desarrollo del Pensamiento Logico: ");
+                scanf("%f", &asignaturas.LOGICA);
+                printf("Introduccion a las TICS: ");
+                scanf("%f", &asignaturas.TICS);
                 break;
             case 2:
-                printf("Ingrese la cantidad de notas que desea llenar: ");
-                scanf("%d", &cantidad);
-                for(int contador=0; contador<cantidad; contador++){
-                    printf("Ingrese la nota %d: ", contador+1);
-                    scanf("%f", &ProgramingNotes[contador]);
-                }
-                break;
-            case 3:
-                printf("Ingrese la cantidad de notas que desea llenar a partir del estudiante %d: ", cantidad);
-                scanf("%d", &agregar);
-                for(int contador=cantidad; contador<cantidad+agregar; contador++){
-                    printf("Ingrese la nota %d: ", contador+1);
-                    scanf("%f", &ProgramingNotes[contador]);
-                }
-                cantidad+=agregar;
-                break;
+                printf("Seleccione la asignatura:\n");
+                menuAsignaturas();
+                scanf("%d", &opcion2);
+                switch (opcion2){
+                    case 1:
+                        printf("Ingrese la nota de Programacion:: ");
+                        scanf("%f", &asignaturas.PROGRAMACION);
+                        break;
+                    case 2:
+                        printf("Ingrese la nota de Matematicas:: ");
+                        scanf("%f", &asignaturas.MATEMATICAS);
+                        break;   
+                    case 3:
+                        printf("Ingrese la nota de Pensamiento Logico:: ");
+                        scanf("%f", &asignaturas.LOGICA);
+                        break;
+                    case 4:
+                        printf("Ingrese la nota de Introduccion a las TICS:: ");
+                        scanf("%f", &asignaturas.TICS);
+                        break;   
+                    case 0:
+                        printf("\n");
+                        break;
+                    default:
+                        printf("¡La opcion no es valida!");
+                        break;
+                    }
+                    break;
             case 0:
                 printf("\n");
                 break;
@@ -83,22 +130,23 @@ void crearNotas(float ProgramingNotes[]){
     }   
 }
 
-void verNotas(float ProgramingNotes[]){
+void verNotas(){
     int opcion,nota;
+    char notas[1];
     opcion=1;
     while (opcion !=0 ){
         menuVer();
         scanf("%d", &opcion);
         switch (opcion){
             case 1:
-                for(int contador=0; contador<34; contador++){
-                    printf("La nota %d es: %.1f\n", contador+1, ProgramingNotes[contador]);
+                for(int contador=0; contador<1; contador++){
+                    printf("La nota %d es: %.1f\n", contador+1, notas[contador]);
                 }   
                 break;
             case 2:
                 printf("Ingrese la nota que quiere ver: ");
                 scanf("%d", &nota);
-                printf("La nota %d es: %.1f\n", nota, ProgramingNotes[nota-1]);
+                printf("La nota %d es: %.1f\n", nota, notas[nota-1]);
                 break;
             case 0:
                 printf("\n");
@@ -110,17 +158,18 @@ void verNotas(float ProgramingNotes[]){
     }     
 }
 
-void cambiarNotas(float ProgramingNotes[]){
+void cambiarNotas(){
     int opcion,nota;
+    char notas[1];
     opcion=1;
     while (opcion !=0 ){
         menuCambiar();
         scanf("%d", &opcion);
         switch (opcion){
             case 1:
-                for(int contador=0; contador<34; contador++){
+                for(int contador=0; contador<1; contador++){
                     printf("Ingrese la nota %d: ", contador+1);
-                    scanf("%f", &ProgramingNotes[contador]);
+                    scanf("%f", &notas[contador]);
                 }
                 break;
             case 2:
@@ -128,7 +177,7 @@ void cambiarNotas(float ProgramingNotes[]){
                 scanf("%d", &nota);
                 printf("Ingrese la nueva nota %d: ", nota);
                 nota=nota-1;
-                scanf("%f", &ProgramingNotes[nota]);   
+                scanf("%f", &notas[nota]);   
                 break;
             case 0:
                 printf("\n");
@@ -140,23 +189,24 @@ void cambiarNotas(float ProgramingNotes[]){
     }  
 }
 
-void eliminarNotas(float ProgramingNotes[]){
+void eliminarNotas(){
     int opcion,nota;
+    char notas[1];
     opcion=1;
     while (opcion !=0 ){
         menuEliminar();
         scanf("%d", &opcion);
         switch (opcion){
             case 1:
-                for(int contador=0; contador<34;contador++){
-                    ProgramingNotes[contador]=-1;
+                for(int contador=0; contador<1;contador++){
+                    notas[contador]=-1;
                 }
                 break;
             case 2:
                 printf("ingrese la nota del estudiante que quiere eliminar: ");
                 scanf("%d", &nota); 
                 nota=nota-1;
-                ProgramingNotes[nota]=-1;
+                notas[nota]=-1;
                 printf("La nota ha sido eliminada...");
                 break;
             case 0:
@@ -172,26 +222,22 @@ void eliminarNotas(float ProgramingNotes[]){
 
 void main(){
     int opcion;
-    float ProgramingNotes[34];
-    for(int contador=0; contador<34;contador++){
-        ProgramingNotes[contador]=-1;
-    }
     opcion=1;
     while (opcion !=0 ){
         menu();
         scanf("%d", &opcion);
         switch (opcion){
             case 1:
-                crearNotas(ProgramingNotes);
+                crearNotas();
                 break;
             case 2:
-                verNotas(ProgramingNotes);
+                verNotas();
                 break;
             case 3:
-                cambiarNotas(ProgramingNotes);
+                cambiarNotas();
                 break;
             case 4:
-                eliminarNotas(ProgramingNotes);
+                eliminarNotas();
                 break;
             case 0:
                 printf("\nHas salido del programa, Adios!");
