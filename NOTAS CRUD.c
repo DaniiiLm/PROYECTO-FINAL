@@ -1,16 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+//ESTRUCTURAS
 typedef struct{
-    int DIA;
-    int MES;
-    int ANYO;
+    int dia;
+    int mes;
+    int anyo;
 } FECHA;
 
 typedef struct{
-    float PROGRAMACION;
-    float MATEMATICAS;
-    float LOGICA;
-    float TICS;
+    float programacion;
+    float matematicas;
+    float logica;
+    float tics;
 } ASIGNATURAS;
 
 typedef struct{
@@ -18,102 +20,131 @@ typedef struct{
     //ESTUDIANTE Estudiante;
     ASIGNATURAS notas;
     float promedio;
-
 } INFORME;
 
+typedef enum{
+    sinNota=-1
+} NOTA;
 
 
-
-void menu(){
-    printf("\n----- NOTAS PROGRAMACION -----\n");
+//MENUS
+void menuPrincipal(){
+    printf("1. Estudiante\n");
+    printf("0. Asignaturas y Notas\n\n");
+    printf("Digite un opcion: ");
+}
+void menuNotas(){
     printf("1. Subir notas\n");
     printf("2. Ver las notas\n");
     printf("3. Cambiar las notas\n");
     printf("4. Borrar las notas\n");
-    printf("0. Salir\n\n");
+    printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
 void menuAsignaturas(){
     printf("1. Programacion\n");
     printf("2. Matematicas\n");
-    printf("3. Desarrollo del Pensamiento Logico\n");
+    printf("3. Pensamiento Logico\n");
     printf("4. Introduccion a las TICS\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
 
+
+//MENU CRUD NOTAS
 void menuCrear(){
-    printf("\n------------------------------\n");
     printf("1. Ingresar todas las notas\n");
     printf("2. Ingresar ciertas notas\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
-
 void menuVer(){
-    printf("\n------------------------------\n");
     printf("1. Ver todas las notas\n");
     printf("2. Ver una nota especifica\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
-
 void menuCambiar(){
-    printf("\n------------------------------\n");
     printf("1. Cambiar todas las notas\n");
     printf("2. Cambiar ciertas notas\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
-
 void menuEliminar(){
-    printf("\n------------------------------\n");
     printf("1. Eliminar todas las notas\n");
     printf("2. Eliminar una nota\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
 
-void crearNotas(){
+
+//FUNCIONES
+float validarNotas(){
+    float nota;
+    scanf("%f", &nota);
+    while(nota<0.0 || nota>5.0){
+        printf("Error. Ingrese una nota valida (0 a 5): ");
+        scanf("%f", &nota);
+    }
+    return nota;
+}
+void conNota(char* nombreAsignatura, float nota){
+    if(nota == sinNota){
+        printf("%s: Sin nota\n", nombreAsignatura);
+    } else {
+        printf("%s: %.1f\n", nombreAsignatura, nota);
+    }
+}
+
+
+//CRUD NOTAS
+ASIGNATURAS crearNotas(){
     int opcion=1,opcion2=1;
-    ASIGNATURAS asignaturas;
+    ASIGNATURAS asignaturas={sinNota, sinNota, sinNota, sinNota};
     while (opcion !=0 ){
         menuCrear();
         scanf("%d", &opcion);
+        system("cls");
         switch (opcion){
             case 1:
+                printf("Ingrese la nota de 0 a 5\n");
                 printf("Programacion: ");
-                scanf("%f", &asignaturas.PROGRAMACION);
+                asignaturas.programacion=validarNotas();
                 printf("Matematicas: ");
-                scanf("%f", &asignaturas.MATEMATICAS);
-                printf("Desarrollo del Pensamiento Logico: ");
-                scanf("%f", &asignaturas.LOGICA);
+                asignaturas.matematicas=validarNotas();
+                printf("Pensamiento Logico: ");
+                asignaturas.logica=validarNotas();
                 printf("Introduccion a las TICS: ");
-                scanf("%f", &asignaturas.TICS);
+                asignaturas.tics=validarNotas();
+                system("cls");
                 break;
             case 2:
                 printf("Seleccione la asignatura:\n");
                 menuAsignaturas();
                 scanf("%d", &opcion2);
+                system("cls");
                 switch (opcion2){
                     case 1:
-                        printf("Ingrese la nota de Programacion:: ");
-                        scanf("%f", &asignaturas.PROGRAMACION);
+                        printf("Ingrese la nota de Programacion: ");
+                        asignaturas.programacion=validarNotas();
+                        system("cls");
                         break;
                     case 2:
-                        printf("Ingrese la nota de Matematicas:: ");
-                        scanf("%f", &asignaturas.MATEMATICAS);
+                        printf("Ingrese la nota de Matematicas: ");
+                        asignaturas.matematicas=validarNotas();
+                        system("cls");
                         break;   
                     case 3:
-                        printf("Ingrese la nota de Pensamiento Logico:: ");
-                        scanf("%f", &asignaturas.LOGICA);
+                        printf("Ingrese la nota de Pensamiento Logico: ");
+                        asignaturas.logica=validarNotas();
+                        system("cls");
                         break;
                     case 4:
-                        printf("Ingrese la nota de Introduccion a las TICS:: ");
-                        scanf("%f", &asignaturas.TICS);
+                        printf("Ingrese la nota de Introduccion a las TICS: ");
+                        asignaturas.tics=validarNotas();
+                        system("cls");
                         break;   
                     case 0:
-                        printf("\n");
                         break;
                     default:
                         printf("¡La opcion no es valida!");
@@ -121,35 +152,52 @@ void crearNotas(){
                     }
                     break;
             case 0:
-                printf("\n");
                 break;
             default:
                 printf("¡La opcion no es valida!");
                 break;
         }
-    }   
+    }
+    return asignaturas;   
 }
-
-void verNotas(){
-    int opcion,nota;
-    char notas[1];
-    opcion=1;
+void verNotas(ASIGNATURAS asignaturas){
+    int opcion=1, opcion2=1;
     while (opcion !=0 ){
         menuVer();
         scanf("%d", &opcion);
+        system("cls");
         switch (opcion){
             case 1:
-                for(int contador=0; contador<1; contador++){
-                    printf("La nota %d es: %.1f\n", contador+1, notas[contador]);
-                }   
+                conNota("Programacion", asignaturas.programacion);
+                conNota("Matematicas", asignaturas.matematicas);
+                conNota("Pensamiento Logico", asignaturas.logica);
+                conNota("Introduccion a las TICS", asignaturas.tics);
                 break;
             case 2:
-                printf("Ingrese la nota que quiere ver: ");
-                scanf("%d", &nota);
-                printf("La nota %d es: %.1f\n", nota, notas[nota-1]);
-                break;
+                printf("Seleccione la asignatura:\n");
+                menuAsignaturas();
+                scanf("%d", &opcion2);
+                system("cls");
+                switch (opcion2){
+                    case 1:
+                        conNota("Programacion", asignaturas.programacion);
+                        break;
+                    case 2:
+                        conNota("Matematicas", asignaturas.matematicas);
+                        break;
+                    case 3:
+                        conNota("Pensamiento Logico", asignaturas.logica);
+                        break;
+                    case 4:
+                        conNota("Introduccion a las TICS", asignaturas.tics);
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        printf("¡La opcion no es valida!");
+                        break;
+                }
             case 0:
-                printf("\n");
                 break;
             default:
                 printf("¡La opcion no es valida!");
@@ -158,7 +206,7 @@ void verNotas(){
     }     
 }
 
-void cambiarNotas(){
+/*void cambiarNotas(){
     int opcion,nota;
     char notas[1];
     opcion=1;
@@ -217,27 +265,27 @@ void eliminarNotas(){
                 break;
         }
     }
-}
-
+}*/
 
 void main(){
-    int opcion;
-    opcion=1;
+    int opcion=1;
+    ASIGNATURAS asignaturas;
     while (opcion !=0 ){
-        menu();
+        menuNotas();
         scanf("%d", &opcion);
+        system("cls");
         switch (opcion){
             case 1:
-                crearNotas();
+                asignaturas=crearNotas();
                 break;
             case 2:
-                verNotas();
+                verNotas(asignaturas);
                 break;
             case 3:
-                cambiarNotas();
+                //cambiarNotas();
                 break;
             case 4:
-                eliminarNotas();
+                //eliminarNotas();
                 break;
             case 0:
                 printf("\nHas salido del programa, Adios!");
