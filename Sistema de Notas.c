@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define maxEstudiantes 30
+#define anchoNombreCompleto 45
+#define anchoDocumento 12
 
 //ESTRUCTURAS
 typedef struct{
@@ -17,8 +19,10 @@ typedef struct{
 } ASIGNATURAS;
 
 typedef struct{
-    char nombre[30];
-    char apellido[30];
+    char nombre[15];
+    char nombre2[15];
+    char apellido[15];
+    char apellido2[15];
     int docIdentidad;
     ASIGNATURAS asignaturas;
 } ESTUDIANTE;
@@ -36,6 +40,7 @@ typedef enum{
 
 //MENUS
 void menuPrincipal(){
+    system("cls");
     printf("1. Estudiante\n");
     printf("2. Asignaturas y Notas\n");
     printf("0. Salir del programa\n\n");
@@ -57,8 +62,6 @@ void menuEstudiantes(){
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
-
-
 //MENU NOTAS
 void menuAsignaturas(){
     printf("1. Programacion\n");
@@ -92,19 +95,26 @@ void menuEliminar(){
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
-
-
 //MENU ESTUDIANTES
 void menuCambiarEstudiante(){
     printf("1. Nombre\n");
-    printf("2. Apellido\n");
-    printf("3. Documento de identidad\n");
+    printf("2. Segundo nombre\n");
+    printf("3. Apellido\n");
+    printf("4. Segundo pellido\n");
+    printf("5. Documento de identidad\n");
     printf("0. Volver atras\n\n");
     printf("Digite un opcion: ");
 }
 
 
+
 //FUNCIONES
+void limpiarBuffer() {
+    int c = getchar();
+    while(c != '\n' && c != EOF){
+        c = getchar();
+    }
+}
 float validarNotas(){
     float nota;
     scanf("%f", &nota);
@@ -119,6 +129,16 @@ void conNota(char* nombreAsignatura, float nota){
         printf("%s: Sin nota\n", nombreAsignatura);
     } else {
         printf("%s: %.1f\n", nombreAsignatura, nota);
+    }
+}
+void leerLinea(char *buffer, int tamano) {
+    if(fgets(buffer, tamano, stdin)) {
+        for(int cont=0; cont<tamano; cont++) {
+            if(buffer[cont]=='\n'){  
+                buffer[cont]='\0';     
+                break;                
+            }
+        }
     }
 }
 //CRUD NOTAS
@@ -183,54 +203,11 @@ void crearNotas(ASIGNATURAS *asignaturas){
     }  
 }
 void mostrarNotas(ASIGNATURAS asignaturas){
-    int opcion=1, opcion2=1;
-    while (opcion !=0 ){
-        menuVer();
-        scanf("%d", &opcion);
-        system("cls");
-        switch (opcion){
-            case 1:
-                conNota("Programacion", asignaturas.programacion);
-                conNota("Matematicas", asignaturas.matematicas);
-                conNota("Pensamiento Logico", asignaturas.logica);
-                conNota("Introduccion a las TICS", asignaturas.tics);
-                printf("\n");
-                break;
-            case 2:
-                printf("Seleccione la asignatura:\n");
-                menuAsignaturas();
-                scanf("%d", &opcion2);
-                system("cls");
-                switch (opcion2){
-                    case 1:
-                        conNota("Programacion", asignaturas.programacion);
-                        printf("\n");
-                        break;
-                    case 2:
-                        conNota("Matematicas", asignaturas.matematicas);
-                        printf("\n");
-                        break;
-                    case 3:
-                        conNota("Pensamiento Logico", asignaturas.logica);
-                        printf("\n");
-                        break;
-                    case 4:
-                        conNota("Introduccion a las TICS", asignaturas.tics);
-                        printf("\n");
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        printf("La opcion no es valida!\n\n");
-                        break;
-                }
-            case 0:
-                break;
-            default:
-                printf("La opcion no es valida!\n\n");
-                break;
-        }
-    }     
+    conNota("Programacion", asignaturas.programacion);
+    conNota("Matematicas", asignaturas.matematicas);
+    conNota("Pensamiento Logico", asignaturas.logica);
+    conNota("Introduccion a las TICS", asignaturas.tics);
+    printf("\n");    
 }
 void modificarNotas(ASIGNATURAS *asignaturas){
     int opcion=1, opcion2=1;
@@ -352,12 +329,21 @@ void crearEstudiante(ESTUDIANTE estudiantes[], int *cantidad){
         printf("No se pueden agregar mas estudiantes.\n\n");
         return;
     }
-    printf("Ingrese nombre del estudiante: ");
-    scanf(" %29s", estudiantes[*cantidad].nombre);  // %29s es para evitar desborde
-    printf("Ingrese apellido del estudiante: ");
-    scanf(" %29s", estudiantes[*cantidad].apellido);
+    printf("Ingrese nombre(s) del estudiante: ");
+    leerLinea(estudiantes[*cantidad].nombre, sizeof(estudiantes[*cantidad].nombre));
+
+    printf("Ingrese segundo nombre (Presione Enter si no tiene): ");
+    leerLinea(estudiantes[*cantidad].nombre2, sizeof(estudiantes[*cantidad].nombre2));
+
+    printf("Ingrese primer apellido del estudiante: ");
+    leerLinea(estudiantes[*cantidad].apellido, sizeof(estudiantes[*cantidad].apellido));
+
+    printf("Ingrese segundo apellido del estudiante: ");
+    leerLinea(estudiantes[*cantidad].apellido2, sizeof(estudiantes[*cantidad].apellido2));
+
     printf("Ingrese documento de identidad del estudiante: ");
     scanf("%d", &estudiantes[*cantidad].docIdentidad);
+    limpiarBuffer();
 
 
     // Inicializamos sinNota por defecto
@@ -375,46 +361,87 @@ void mostrarEstudiante(ESTUDIANTE estudiantes[], int cantidad){
         printf("No hay estudiantes registrados.\n\n");
         return;
     }
-
+    printf("Indice | %-*s | %-*s\n", anchoNombreCompleto, "Nombre completo", anchoDocumento, "Documento");
+    printf("------------------------------------------------------------------\n");
     for(int cont=0; cont<cantidad; cont++){
-        printf("[%d] %s %s | Documento: %d\n", cont+1, estudiantes[cont].nombre, estudiantes[cont].apellido, estudiantes[cont].docIdentidad);
+        char nombreCompleto[anchoNombreCompleto+1];
+        if(estudiantes[cont].nombre2[0] != '\0'){   //valida la primera posicon del vector, si hay o no caracteres
+            snprintf(nombreCompleto, sizeof(nombreCompleto), "%s %s %s %s",estudiantes[cont].nombre,estudiantes[cont].nombre2,estudiantes[cont].apellido,estudiantes[cont].apellido2);
+        } else {
+            snprintf(nombreCompleto, sizeof(nombreCompleto), "%s %s %s", estudiantes[cont].nombre, estudiantes[cont].apellido, estudiantes[cont].apellido2);
+        }
+        printf("[%2d]   | %-*s | %-*d\n", cont+1, anchoNombreCompleto, nombreCompleto, anchoDocumento, estudiantes[cont].docIdentidad);    
     }
     printf("\n");
 }
 void modificarEstudiante(ESTUDIANTE estudiantes[], int cantidad){
-    int opcion, indice;
+    int opcion=1, indice, salirModificar=0;
     if(cantidad==0){
         printf("No hay estudiantes registrados.\n\n");
         return;
     }
-    mostrarEstudiante(estudiantes, cantidad);
-    printf("Ingrese el indice del estudiante a modificar (1 - %d): ", cantidad);
-    scanf("%d", &indice);
-    while(indice<1 || indice>cantidad) {
-        printf("Indice invalido o fuera de rango! (1 - %d): ", cantidad);
+    while(!salirModificar){
+        mostrarEstudiante(estudiantes, cantidad);
+        printf("Ingrese 0 para salir o\nIngrese el indice del estudiante a modificar (1 - %d): ", cantidad);
         scanf("%d", &indice);
-    }
-    system("cls");
-    printf("Dato a modificar: \n");
-    menuCambiarEstudiante();
-    scanf("%d",&opcion);
-    system("cls");
-    switch(opcion){
-        case 1:
-            printf("Nombre actual: %s\n", estudiantes[indice-1].nombre);
-            printf("Nuevo nombre: ");
-            scanf(" %s", &estudiantes[indice-1].nombre);
+        limpiarBuffer();
+        if(indice==0) {
+            salirModificar=1;
             break;
-        case 2:
-            printf("Apellido actual: %s\n", estudiantes[indice-1].apellido);
-            printf("Nuevo apellido: ");
-            scanf(" %s", &estudiantes[indice-1].apellido);
-            break;
-        case 3:
-            printf("Documento actual: %d\n", estudiantes[indice-1].docIdentidad);
-            printf("Nuevo documento: ");
-            scanf(" %d", &estudiantes[indice-1].docIdentidad);
         }
+        while(indice<1 || indice>cantidad) {
+            printf("Indice invalido o fuera de rango! (1 - %d): ", cantidad);
+            scanf("%d", &indice);
+            limpiarBuffer();   
+        }
+        system("cls");
+        while(opcion!=0){
+            printf("Dato a modificar: \n");
+            menuCambiarEstudiante();
+            scanf("%d",&opcion);
+            limpiarBuffer();
+            system("cls");
+            switch(opcion){
+                case 1:
+                    printf("Primer nombre actual: %s\n", estudiantes[indice-1].nombre);
+                    printf("Nuevo nombre: ");
+                    leerLinea(estudiantes[indice-1].nombre, sizeof(estudiantes[indice-1].nombre));
+                    system("cls");
+                    break;
+                case 2:
+                    printf("Segundo nombre actual: %s\n", estudiantes[indice-1].nombre2);
+                    printf("Nuevo segundo nombre: ");
+                    leerLinea(estudiantes[indice-1].nombre2, sizeof(estudiantes[indice-1].nombre2));
+                    system("cls");
+                    break;
+                case 3:
+                    printf("Primer apellido actual: %s\n", estudiantes[indice-1].apellido);
+                    printf("Nuevo apellido: ");
+                    leerLinea(estudiantes[indice-1].apellido, sizeof(estudiantes[indice-1].apellido));
+                    system("cls");
+                    break;
+                case 4:
+                    printf("Segundo apellido actual: %s\n", estudiantes[indice-1].apellido2);
+                    printf("Nuevo segundo apellido: ");
+                    leerLinea(estudiantes[indice-1].apellido2, sizeof(estudiantes[indice-1].apellido2));
+                    system("cls");
+                    break;
+                case 5:
+                    printf("Documento actual: %d\n", estudiantes[indice-1].docIdentidad);
+                    printf("Nuevo documento: ");
+                    scanf(" %d", &estudiantes[indice-1].docIdentidad);
+                    system("cls");
+                    limpiarBuffer();
+                    break;
+                case 0:
+                    break;
+                default:
+                    printf("La opcion no es valida!\n\n");
+            }
+        }
+        
+    }
+    
 }
 void eliminarEstudiante(ESTUDIANTE estudiantes[], int *cantidad){
     int eliminar;
@@ -445,13 +472,13 @@ void eliminarEstudiante(ESTUDIANTE estudiantes[], int *cantidad){
 //MAIN
 void main(){
     system("cls");
-    int opcion1=1,opcion2,opcion3;
-    ESTUDIANTE estudiantes[maxEstudiantes];
+    int opcion1=1,opcion2,opcion3,opcionEstudiante,salirNotas;
+    ESTUDIANTE estudiantes[maxEstudiantes]; 
     int cantidad=0; // Numero actual de estudiantes guardados
-    ASIGNATURAS asignaturas={sinNota, sinNota, sinNota, sinNota};
     while(opcion1!=0){
         menuPrincipal();
         scanf("%d", &opcion1);
+        limpiarBuffer();
         system("cls");
         switch (opcion1){
             case 1:
@@ -459,6 +486,7 @@ void main(){
                 while(opcion2!=0){
                     menuEstudiantes();
                     scanf("%d", &opcion2);
+                    limpiarBuffer();
                     system("cls");
                     switch (opcion2){
                         case 1:
@@ -482,30 +510,53 @@ void main(){
                     }
                     break;
             case 2:
-                opcion3=1;    
-                while(opcion3!=0){
-                    menuNotas();
-                    scanf("%d", &opcion3);
-                    system("cls");
-                    switch (opcion3){
-                        case 1:
-                            crearNotas(&asignaturas);
-                            break;
-                        case 2:
-                            mostrarNotas(asignaturas);
-                            break;
-                        case 3:
-                            modificarNotas(&asignaturas);
-                            break;
-                        case 4:
-                            eliminarNotas(&asignaturas);
-                            break;
-                        case 0:
-                            break;
-                        default:
-                            printf("La opcion no es valida!\n\n");
-                            break;
+                salirNotas=0;     
+                if(cantidad==0){
+                printf("Primero debes crear estudiantes.\n\n");
+                break;
+                }
+                while(!salirNotas){
+                    mostrarEstudiante(estudiantes, cantidad);
+                    printf("Ingrese 0 para volver al menu principal o\nSeleccione un estudiante (1 - %d): ", cantidad);
+                    scanf("%d", &opcionEstudiante);
+                    limpiarBuffer();
+                    if(opcionEstudiante==0){
+                    salirNotas = 1;
+                    break;
+                    }  
+                    while (opcionEstudiante < 1 || opcionEstudiante > cantidad){
+                        printf("Indice invalido. Ingrese un valor entre 1 y %d: ", cantidad);
+                        scanf("%d", &opcionEstudiante);
+                        limpiarBuffer();
                         }
+                    system("cls");
+                    opcion3=1;
+                    while(opcion3!=0){
+                        menuNotas();
+                        scanf("%d", &opcion3);
+                        limpiarBuffer();
+                        system("cls");
+                        switch (opcion3){
+                            case 1:
+                                crearNotas(&estudiantes[opcionEstudiante-1].asignaturas);
+                                break;
+                            case 2:
+                                mostrarNotas(estudiantes[opcionEstudiante-1].asignaturas);
+                                break;
+                            case 3:
+                                modificarNotas(&estudiantes[opcionEstudiante-1].asignaturas);
+                                break;
+                            case 4:
+                                eliminarNotas(&estudiantes[opcionEstudiante-1].asignaturas);
+                                break;
+                            case 0:
+                                break;
+                            default:
+                                printf("La opcion no es valida!\n\n");
+                                break;
+                            }
+                        }
+                        system("cls");
                     }
                     break;
             case 0:
