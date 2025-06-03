@@ -5,9 +5,41 @@
 #define maxEstudiantes 30
 #define maxAsignaturas 4
 #define maxInformes 50
-#define anchoNombreCompleto 80
-#define anchoDocumento 12
+#define anchoIndice 8
+#define anchoNombreCompleto 56
+#define anchoDocumento 13
 #define notaInforme(n) if(n==sinNota)printf("Sin nota"); else printf("%.1f", n);
+
+
+//ESTRUCTURAS
+typedef struct{
+    float programacion;
+    float matematicas;
+    float logica;
+    float tics;
+    float promedio;
+} ASIGNATURAS;
+typedef struct{
+    char nombre[20];
+    char nombre2[20];
+    char apellido[20];
+    char apellido2[20];
+    int docIdentidad;
+    ASIGNATURAS asignaturas;
+} ESTUDIANTE;
+typedef struct{
+    int numeroEstudiante;
+    char fecha[11];
+    char observaciones[52];
+    ESTUDIANTE estudiantes;
+} INFORME;
+typedef enum{
+    sinNota=-1
+} NOTA;
+
+//Variables Globales
+INFORME informes[maxInformes];
+int cantidadInformes=0;
 
 //DISENO
 void gotoxy(int x, int y){
@@ -49,136 +81,177 @@ void centrarTexto(char *texto, int y){
     int longitud=strlen(texto);
     gotoxy(40-(longitud/2),y);printf(texto);
 }
+void limpiarLinea(int y) {
+    gotoxy(0, y);
+    for (int cont=0; cont<80; cont++) printf(" ");
+}
+//FUNCIONES DE DISENO
+void barraCargaConMensajes(){
+    char mensajes[4][50] = {
+    "Cargando...",
+    "Esperando confirmacion del gobierno...",
+    "Verificando integridad de los informes.",
+    "Verificando estudiantes..."
+    };
+    int cantidadMensajes = sizeof(mensajes) / sizeof(mensajes[0]);
+    centrarTexto("B I E N V E N I D O S", 8);
+    // Fondo de barra
+    for(int cont=20; cont<60; cont++){
+        gotoxy(cont, 14);
+        printf("%c", 177);
+    }
+    // Barra de carga con mensajes
+    for(int cont=0; cont<=40; cont++){
+        gotoxy(20 + cont, 14);
+        printf("%c", 219);
+        int mensajeIndex = (cont * cantidadMensajes) / 41;
+        limpiarLinea(12);
+        centrarTexto(mensajes[mensajeIndex], 12);
+        Sleep(100); // Velocidad de animacion
+    }
+    centrarTexto("CARGA COMPLETA", 16);
+    limpiarLinea(12);
+    Sleep(2000);
+}
 
 
-
-//ESTRUCTURAS
-typedef struct{
-    float programacion;
-    float matematicas;
-    float logica;
-    float tics;
-    float promedio;
-} ASIGNATURAS;
-typedef struct{
-    char nombre[20];
-    char nombre2[20];
-    char apellido[20];
-    char apellido2[20];
-    int docIdentidad;
-    ASIGNATURAS asignaturas;
-} ESTUDIANTE;
-typedef struct{
-    int numeroEstudiante;
-    char fecha[11];
-    char observaciones[52];
-    ESTUDIANTE estudiantes;
-} INFORME;
-typedef enum{
-    sinNota=-1
-} NOTA;
-
-//Variables Globales
-INFORME informes[maxInformes];
-int cantidadInformes=0;
 
 //MENUS
 void menuPrincipal(){
-    printf("1. Estudiante\n");
-    printf("2. Asignaturas y Notas\n");
-    printf("3. Informes\n");
-    printf("0. Salir del programa\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,14);
+    recuadro2(14,7,66,16);
+    centrarTexto("SISTEMA DE NOTAS", 8);
+    gotoxy(16,10);printf("1. Estudiante");
+    gotoxy(16,11);printf("2. Asignaturas y Notas");
+    gotoxy(16,12);printf("3. Informes");
+    gotoxy(16,13);printf("0. Salir del programa");
+    gotoxy(16,15);printf("Digite un opcion: ");
 }
 void menuNotas(){
-    printf("1. Subir notas\n");
-    printf("2. Ver las notas\n");
-    printf("3. Cambiar las notas\n");
-    printf("4. Borrar las notas\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,15);
+    recuadro2(14,7,66,17);
+    centrarTexto("MENU DE NOTAS", 8);
+    gotoxy(16,10);printf("1. Subir notas\n");
+    gotoxy(16,11);printf("2. Ver las notas\n");
+    gotoxy(16,12);printf("3. Cambiar las notas\n");
+    gotoxy(16,13);printf("4. Borrar las notas\n");
+    gotoxy(16,14);printf("0. Volver atras\n\n");
+    gotoxy(16,16);printf("Digite un opcion: ");
 }
 void menuEstudiantes(){
-    printf("1. Crear estudiante\n");
-    printf("2. Ver estudiantes\n");
-    printf("3. Cambiar datos del estudiante\n");
-    printf("4. Eliminar estudiantes\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,15);
+    recuadro2(14,7,66,17);
+    centrarTexto("MENU ESTUDIANTES", 8);
+    gotoxy(16,10);printf("1. Crear estudiante\n");
+    gotoxy(16,11);printf("2. Ver estudiantes\n");
+    gotoxy(16,12);printf("3. Cambiar datos del estudiante\n");
+    gotoxy(16,13);printf("4. Eliminar estudiantes\n");
+    gotoxy(16,14);printf("0. Volver atras\n\n");
+    gotoxy(16,16);printf("Digite un opcion: ");
+}
+void menuInformes(){
+    recuadro(14,9,66,14);
+    recuadro2(14,7,66,16);
+    centrarTexto("MENU INFORMES", 8);
+    gotoxy(16,10);printf("1. Crear informes\n");
+    gotoxy(16,11);printf("2. Ver informes\n");
+    gotoxy(16,12);printf("3. Eliminar Informes\n");
+    gotoxy(16,13);printf("0. Volver atras\n\n");
+    gotoxy(16,15);printf("Digite un opcion: ");
 }
 //MENU NOTAS
 void menuAsignaturas(){
-    printf("1. Programacion\n");
-    printf("2. Matematicas\n");
-    printf("3. Pensamiento Logico\n");
-    printf("4. Introduccion a las TICS\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,15);
+    recuadro2(14,7,66,17);
+    centrarTexto("ASIGNATURAS", 8);
+    gotoxy(16,10);printf("1. Programacion\n");
+    gotoxy(16,11);printf("2. Matematicas\n");
+    gotoxy(16,12);printf("3. Pensamiento Logico\n");
+    gotoxy(16,13);printf("4. Introduccion a las TICS\n");
+    gotoxy(16,14);printf("0. Volver atras\n\n");
+    gotoxy(16,16);printf("Seleccione la asignatura: ");
 }
 void menuCrear(){
-    printf("1. Ingresar todas las notas\n");
-    printf("2. Ingresar ciertas notas\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU SUBIR NOTAS", 8);
+    gotoxy(16,10);printf("1. Ingresar todas las notas\n");
+    gotoxy(16,11);printf("2. Ingresar ciertas notas\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 void menuVer(){
-    printf("1. Ver todas las notas\n");
-    printf("2. Ver una nota especifica\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU VER NOTAS", 8);
+    gotoxy(16,10);printf("1. Ver todas las notas\n");
+    gotoxy(16,11);printf("2. Ver una nota especifica\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 void menuCambiar(){
-    printf("1. Cambiar todas las notas\n");
-    printf("2. Cambiar ciertas notas\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU CAMBIAR NOTAS", 8);
+    gotoxy(16,10);printf("1. Cambiar todas las notas\n");
+    gotoxy(16,11);printf("2. Cambiar ciertas notas\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 void menuEliminar(){
-    printf("1. Eliminar todas las notas\n");
-    printf("2. Eliminar una nota\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU ELIMINAR NOTAS", 8);
+    gotoxy(16,10);printf("1. Eliminar todas las notas\n");
+    gotoxy(16,11);printf("2. Eliminar una nota\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 //MENU ESTUDIANTES
 void menuCambiarEstudiante(){
-    printf("1. Nombre\n");
-    printf("2. Segundo nombre\n");
-    printf("3. Apellido\n");
-    printf("4. Segundo pellido\n");
-    printf("5. Documento de identidad\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,16);
+    recuadro2(14,7,66,18);
+    centrarTexto("MENU CAMBIAR ESTUDIANTE", 8);
+    gotoxy(16,10);printf("1. Nombre\n");
+    gotoxy(16,11);printf("2. Segundo nombre\n");
+    gotoxy(16,12);printf("3. Apellido\n");
+    gotoxy(16,13);printf("4. Segundo pellido\n");
+    gotoxy(16,14);printf("5. Documento de identidad\n");
+    gotoxy(16,15);printf("0. Volver atras\n\n");
+    gotoxy(16,17);printf("Elige el dato a cambiar: ");
 }
 //MENU INFORMES
-void menuInformes(){
-    printf("1. Crear informes\n");
-    printf("2. Ver informes\n");
-    printf("3. Eliminar Informes\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
-}
 void menuCrearInformes(){
-    printf("1. Crear todos los informes (Sin observaciones)\n");
-    printf("2. Crear un informe especifico\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU CREAR INFORMES", 8);
+    gotoxy(16,10);printf("1. Crear todos los informes (Sin observaciones)\n");
+    gotoxy(16,11);printf("2. Crear un informe especifico\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 void menuMostrarInformes(){
-    printf("1. Ver todos los informes\n");
-    printf("2. Ver un informe especifico\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU MOSTRAR INFORMES", 8);
+    gotoxy(16,10);printf("1. Ver todos los informes\n");
+    gotoxy(16,11);printf("2. Ver un informe especifico\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 void menuEliminarInformes(){
-    printf("1. ELiminar todos los informes (CUIDADO)\n");
-    printf("2. ELiminar un informe\n");
-    printf("0. Volver atras\n\n");
-    printf("Digite un opcion: ");
+    recuadro(14,9,66,13);
+    recuadro2(14,7,66,15);
+    centrarTexto("MENU ELIMINAR INFORMES", 8);
+    gotoxy(16,10);printf("1. ELiminar todos los informes (CUIDADO)\n");
+    gotoxy(16,11);printf("2. ELiminar un informe\n");
+    gotoxy(16,12);printf("0. Volver atras\n\n");
+    gotoxy(16,14);printf("Digite un opcion: ");
 }
 
 
 
-//FUNCIONES
+//FUNCIONES DE UTILIDAD
 void guardarEstudiantes(ESTUDIANTE *estudiantes, int cantidad){
     FILE *archivoEstudiantes = fopen("estudiantes.bat","wb");
     if (archivoEstudiantes == NULL){
@@ -195,13 +268,13 @@ int leerArchivoEstudiantes(ESTUDIANTE *estudiantes){
     if (archivoEstudiantes == NULL){
         printf("Error al abrir el archivo.\n");
         return 0;
-    } 
+    }
     while(fread(&estudiantes[cantidad], sizeof(ESTUDIANTE), 1, archivoEstudiantes)){
         cantidad++;
     }
-    
+
     fclose(archivoEstudiantes);
-    printf("Se cargaron %d estudiantes desde el archivo.\n", cantidad);
+    gotoxy(13,0);printf("Se cargaron %d estudiantes y", cantidad);
     return cantidad;
 }
 void guardarInformes(){
@@ -220,65 +293,14 @@ int leerInformes(){
     if (archivoInformes == NULL){
         printf("Error al abrir el archivo.\n\n");
         return 0;
-    } 
+    }
     while(fread(&informes[cantidad], sizeof(INFORME), 1, archivoInformes)){
         cantidad++;
     }
     fclose(archivoInformes);
-    printf("Se cargaron %d informes desde el archivo.\n\n", cantidad);
+    gotoxy(41,0);printf("%d informes desde el archivo.", cantidad);
     return cantidad;
 }
-void guardarInformesTXT(){
-    const char *nombresMaterias[] = {
-        "Programacion",
-        "Matematicas",
-        "Pensamiento Logico",
-        "Introduccion a las TICS"
-    };
-
-    FILE *archivoInformes = fopen("informesTXT.txt", "w"); // modo escritura
-    if (archivoInformes == NULL) {
-        printf("Error al abrir el archivo.\n");
-        return;
-    }
-
-    for (int i = 0; i < cantidadInformes; i++) {
-        fprintf(archivoInformes, "Informe #%d\n", i + 1);
-        fprintf(archivoInformes, "Fecha: %s\n", informes[i].fecha);
-        fprintf(archivoInformes, "Estudiante: %s %s %s %s\n",
-                informes[i].estudiantes.nombre,
-                informes[i].estudiantes.nombre2,
-                informes[i].estudiantes.apellido,
-                informes[i].estudiantes.apellido2);
-
-        if (strlen(informes[i].observaciones) > 0)
-            fprintf(archivoInformes, "Observaciones: %s\n", informes[i].observaciones);
-        else
-            fprintf(archivoInformes, "Observaciones: Ninguna\n");
-
-        fprintf(archivoInformes, "Asignaturas y Notas:\n");
-
-        float notas[] = {
-            informes[i].estudiantes.asignaturas.programacion,
-            informes[i].estudiantes.asignaturas.matematicas,
-            informes[i].estudiantes.asignaturas.logica,
-            informes[i].estudiantes.asignaturas.tics
-        };
-
-        for (int j = 0; j < 4; j++) {
-            if (notas[j] == sinNota)
-                fprintf(archivoInformes, "  - %s: Sin nota\n", nombresMaterias[j]);
-            else
-                fprintf(archivoInformes, "  - %s: %.1f\n", nombresMaterias[j], notas[j]);
-        }
-
-        fprintf(archivoInformes, "----------------------------\n\n");
-    }
-
-    fclose(archivoInformes);
-    printf("Informes guardados correctamente en informesTXT.txt\n");
-}
-
 void limpiarBuffer() {
     int basura = getchar();
     while(basura != '\n' && basura != EOF){
@@ -290,7 +312,7 @@ float validarNotas(){
     float nota;
     while(1){
         if(scanf("%f%c", &nota, &caracter) != 2 || caracter != '\n' || nota < 0 || nota > 5){
-            printf("Nota invalida. Intente de nuevo: ");
+            gotoxy(15,19);printf("Nota invalida. Intente de nuevo: ");
             limpiarBuffer();
         }else{
             return nota;
@@ -338,14 +360,14 @@ float calcularPromedio(ASIGNATURAS asignaturas) {
         return sinNota; // No hay notas
     }else{
         return sumarNotas(asignaturas, 1) / contador;
-    }       
+    }
 }
 void leerLinea(char *texto, int tamano) {
     if(fgets(texto, tamano, stdin)){
         for(int cont=0; cont<tamano; cont++) {
-            if(texto[cont]=='\n'){  
-                texto[cont]='\0';     
-                break;                
+            if(texto[cont]=='\n'){
+                texto[cont]='\0';
+                break;
             }
         }
     }
@@ -361,45 +383,69 @@ void crearNotas(ASIGNATURAS *asignaturas){
         system("cls");
         switch (opcion){
             case 1:
-                printf("Ingrese la nota de 0 a 5\n");
-                printf("Programacion: ");
-                asignaturas->programacion=validarNotas();
-                printf("Matematicas: ");
-                asignaturas->matematicas=validarNotas();
-                printf("Pensamiento Logico: ");
-                asignaturas->logica=validarNotas();
-                printf("Introduccion a las TICS: ");
-                asignaturas->tics=validarNotas();
+                recuadro(14,9,40,11); //CUADRO ASIGNATRUAS
+                recuadro(14,11,40,13);
+                recuadro(14,13,40,15);
+                recuadro(14,15,40,17);
+                recuadro(40,9,66,11); //CUADRO NOTAS
+                recuadro(40,11,66,13);
+                recuadro(40,13,66,15);
+                recuadro(40,15,66,17);
+                gotoxy(40,9);printf("%c",194);
+                gotoxy(40,11);printf("%c",197);
+                gotoxy(40,13);printf("%c",197);
+                gotoxy(40,15);printf("%c",197);
+                recuadro2(14,7,66,17); //CUADRO PRINCIPAL
+                centrarTexto("INGRESE LA NOTA DE 0 a 5", 8);
+                gotoxy(16,10);printf("Programacion ");
+                gotoxy(16,12);printf("Matematicas ");
+                gotoxy(16,14);printf("Pensamiento Logico ");
+                gotoxy(16,16);printf("Introduccion a las TICS ");
+                gotoxy(42,10);printf("NOTA: "); asignaturas->programacion=validarNotas();
+                gotoxy(42,12);printf("NOTA: "); asignaturas->matematicas=validarNotas();
+                gotoxy(42,14);printf("NOTA: "); asignaturas->logica=validarNotas();
+                gotoxy(42,16);printf("NOTA: "); asignaturas->tics=validarNotas();
                 //Calculamos promedio
                 asignaturas->promedio = calcularPromedio(*asignaturas);
                 system("cls");
                 break;
             case 2:
-                printf("Seleccione la asignatura:\n");
                 menuAsignaturas();
                 scanf("%d", &opcion2);
                 system("cls");
                 switch (opcion2){
                     case 1:
-                        printf("Ingrese la nota de Programacion: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Programacion"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->programacion=validarNotas();
                         system("cls");
                         break;
                     case 2:
-                        printf("Ingrese la nota de Matematicas: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Matematicas"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->matematicas=validarNotas();
                         system("cls");
-                        break;   
+                        break;
                     case 3:
-                        printf("Ingrese la nota de Pensamiento Logico: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Pensamiento Logico"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->logica=validarNotas();
                         system("cls");
                         break;
                     case 4:
-                        printf("Ingrese la nota de Introduccion a las TICS: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Introduccion a las TICS"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->tics=validarNotas();
                         system("cls");
-                        break;   
+                        break;
                     case 0:
                         break;
                     default:
@@ -414,18 +460,22 @@ void crearNotas(ASIGNATURAS *asignaturas){
                 printf("La opcion no es valida!\n\n");
                 break;
         }
-    }  
+    }
 }
 void mostrarNotas(ASIGNATURAS asignaturas){
-    conNota("Programacion", asignaturas.programacion);
-    conNota("Matematicas", asignaturas.matematicas);
-    conNota("Pensamiento Logico", asignaturas.logica);
-    conNota("Introduccion a las TICS", asignaturas.tics);
+    recuadro(14,8,66,10);
+    recuadro(14,15,66,17);
+    centrarTexto("NOTAS DEL ESTUDIANTE",9);
+    recuadro2(14,8,66,17);
+    gotoxy(16,11); conNota("Programacion", asignaturas.programacion);
+    gotoxy(16,12);conNota("Matematicas", asignaturas.matematicas);
+    gotoxy(16,13);conNota("Pensamiento Logico", asignaturas.logica);
+    gotoxy(16,14);conNota("Introduccion a las TICS", asignaturas.tics);
     printf("\n");
     if(asignaturas.promedio == sinNota){
-        printf("Promedio: Sin promedio\n");
+        gotoxy(16,16);printf("Promedio: Sin promedio\n");
     } else {
-        printf("Promedio: %.1f\n", asignaturas.promedio);
+        gotoxy(16,16);printf("Promedio: %.1f\n", asignaturas.promedio);
     }
     printf("\n");
 }
@@ -437,44 +487,69 @@ void modificarNotas(ASIGNATURAS *asignaturas){
         system("cls");
         switch (opcion){
             case 1:
-                printf("Ingrese la nota de 0 a 5\n");
-                printf("Programacion: ");
+                recuadro(14,9,40,11); //CUADRO ASIGNATRUAS
+                recuadro(14,11,40,13);
+                recuadro(14,13,40,15);
+                recuadro(14,15,40,17);
+                recuadro(40,9,66,11); //CUADRO NOTAS
+                recuadro(40,11,66,13);
+                recuadro(40,13,66,15);
+                recuadro(40,15,66,17);
+                gotoxy(40,9);printf("%c",194);
+                gotoxy(40,11);printf("%c",197);
+                gotoxy(40,13);printf("%c",197);
+                gotoxy(40,15);printf("%c",197);
+                recuadro2(14,7,66,17); //CUADRO PRINCIPAL
+                centrarTexto("INGRESE LA NOTA DE 0 a 5", 8);
+                gotoxy(16,10);printf("Programacion "); gotoxy(42,10);printf("NOTA: ");
                 asignaturas->programacion=validarNotas();
-                printf("Matematicas: ");
+                gotoxy(16,12);printf("Matematicas "); gotoxy(42,12);printf("NOTA: ");
                 asignaturas->matematicas=validarNotas();
-                printf("Pensamiento Logico: ");
+                gotoxy(16,14);printf("Pensamiento Logico "); gotoxy(42,14);printf("NOTA: ");
                 asignaturas->logica=validarNotas();
-                printf("Introduccion a las TICS: ");
+                gotoxy(16,16);printf("Introduccion a las TICS "); gotoxy(42,16);printf("NOTA: ");
                 asignaturas->tics=validarNotas();
+                //Calculamos promedio
                 asignaturas->promedio = calcularPromedio(*asignaturas);
                 system("cls");
                 break;
             case 2:
-                printf("Seleccione la asignatura:\n");
                 menuAsignaturas();
                 scanf("%d", &opcion2);
                 system("cls");
                 switch (opcion2){
                     case 1:
-                        printf("Ingrese la nota de Programacion: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Programacion"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->programacion=validarNotas();
                         system("cls");
                         break;
                     case 2:
-                        printf("Ingrese la nota de Matematicas: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);;
+                        gotoxy(16,11);printf("Matematicas"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->matematicas=validarNotas();
                         system("cls");
-                        break;   
+                        break;
                     case 3:
-                        printf("Ingrese la nota de Pensamiento Logico: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Pensamiento Logico"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->logica=validarNotas();
                         system("cls");
                         break;
                     case 4:
-                        printf("Ingrese la nota de Introduccion a las TICS: ");
+                        recuadro(14,10,40,12);
+                        recuadro(40,10,66,12);
+                        recuadro2(14,10,66,12);
+                        gotoxy(16,11);printf("Introduccion a las TICS"); gotoxy(42,11);printf("NOTA: ");
                         asignaturas->tics=validarNotas();
                         system("cls");
-                        break;   
+                        break;
                     case 0:
                         break;
                     default:
@@ -484,13 +559,12 @@ void modificarNotas(ASIGNATURAS *asignaturas){
                     asignaturas->promedio = calcularPromedio(*asignaturas);
                     break;
             case 0:
-                printf("\n");
                 break;
             default:
                 printf("La opcion no es valida!\n\n");
                 break;
         }
-    }  
+    }
 }
 void eliminarNotas(ASIGNATURAS *asignaturas){
     int opcion=1,opcion2=1;
@@ -521,7 +595,7 @@ void eliminarNotas(ASIGNATURAS *asignaturas){
                     case 2:
                         asignaturas->matematicas=sinNota;
                         printf("La nota de Matematicas ha sido eliminada...\n\n");
-                        break;   
+                        break;
                     case 3:
                         asignaturas->logica=sinNota;
                         printf("La nota de Pensamiento Logico ha sido eliminada...\n\n");
@@ -529,7 +603,7 @@ void eliminarNotas(ASIGNATURAS *asignaturas){
                     case 4:
                         asignaturas->tics=sinNota;
                         printf("La nota de Introduccion a las TICS ha sido eliminada...\n\n");
-                        break;   
+                        break;
                     case 0:
                         break;
                     default:
@@ -552,20 +626,33 @@ void crearEstudiante(ESTUDIANTE estudiantes[], int *cantidadEstudiantes){
         printf("No se pueden agregar mas estudiantes.\n\n");
         return;
     }
-    printf("Ingrese nombre del estudiante: ");
-    leerLinea(estudiantes[*cantidadEstudiantes].nombre, sizeof(estudiantes[*cantidadEstudiantes].nombre));
-
-    printf("Ingrese segundo nombre (Presione Enter si no tiene): ");
-    leerLinea(estudiantes[*cantidadEstudiantes].nombre2, sizeof(estudiantes[*cantidadEstudiantes].nombre2));
-
-    printf("Ingrese primer apellido del estudiante: ");
-    leerLinea(estudiantes[*cantidadEstudiantes].apellido, sizeof(estudiantes[*cantidadEstudiantes].apellido));
-
-    printf("Ingrese segundo apellido del estudiante: ");
-    leerLinea(estudiantes[*cantidadEstudiantes].apellido2, sizeof(estudiantes[*cantidadEstudiantes].apellido2));
-
-    printf("Ingrese documento de identidad del estudiante: ");
-    scanf("%d", &estudiantes[*cantidadEstudiantes].docIdentidad);
+    recuadro(14,9,40,11); //CUADRO DATOS
+    recuadro(14,11,40,13);
+    recuadro(14,13,40,15);
+    recuadro(14,15,40,17);
+    recuadro(40,17,66,19);
+    recuadro(40,9,66,11); //CUADRO DATOS ESTUDIANTE
+    recuadro(40,11,66,13);
+    recuadro(40,13,66,15);
+    recuadro(40,15,66,17);
+    recuadro(40,17,66,19);
+    gotoxy(40,9);printf("%c",194);
+    gotoxy(40,11);printf("%c",197);
+    gotoxy(40,13);printf("%c",197);
+    gotoxy(40,15);printf("%c",197);
+    gotoxy(40,17);printf("%c",197);
+    recuadro2(14,7,66,19); //CUADRO PRINCIPAL
+    centrarTexto("INGRESE DATOS DEL ESTUDIANTE", 8);
+    gotoxy(16,10);printf("Nombre: ");
+    gotoxy(16,12);printf("Segundo nombre(Enter)");
+    gotoxy(16,14);printf("Primer apellido");
+    gotoxy(16,16);printf("Segundo apellido");
+    gotoxy(16,18);printf("Documento de identidad");
+    gotoxy(42,10);leerLinea(estudiantes[*cantidadEstudiantes].nombre, sizeof(estudiantes[*cantidadEstudiantes].nombre));
+    gotoxy(42,12);leerLinea(estudiantes[*cantidadEstudiantes].nombre2, sizeof(estudiantes[*cantidadEstudiantes].nombre2));
+    gotoxy(42,14);leerLinea(estudiantes[*cantidadEstudiantes].apellido, sizeof(estudiantes[*cantidadEstudiantes].apellido));
+    gotoxy(42,16);leerLinea(estudiantes[*cantidadEstudiantes].apellido2, sizeof(estudiantes[*cantidadEstudiantes].apellido2));
+    gotoxy(42,18);scanf("%d", &estudiantes[*cantidadEstudiantes].docIdentidad);
     limpiarBuffer();
 
 
@@ -580,21 +667,47 @@ void crearEstudiante(ESTUDIANTE estudiantes[], int *cantidadEstudiantes){
     printf("\nEstudiante creado y ");
 }
 void mostrarEstudiante(ESTUDIANTE estudiantes[], int cantidadEstudiantes){
-    if(cantidadEstudiantes==0){
+    system("cls");
+    if(cantidadEstudiantes == 0){
         printf("No hay estudiantes registrados.\n\n");
         return;
     }
-    printf("Indice | %-*s | %-*s |\n", anchoNombreCompleto, "Nombre completo", anchoDocumento, "Documento"); 
-    printf("------------------------------------------------------------------------------------------------\n");
-    
-    for(int cont=0; cont<cantidadEstudiantes; cont++){
-        char nombreCompleto[anchoNombreCompleto+1];
-        if(estudiantes[cont].nombre2[0] != '\0'){   //valida la primera posicon del vector, si hay o no caracteres
-            snprintf(nombreCompleto, sizeof(nombreCompleto), "%s %s %s %s",estudiantes[cont].nombre,estudiantes[cont].nombre2,estudiantes[cont].apellido,estudiantes[cont].apellido2);
+    // Dibujar encabezado del cuadro
+    recuadro(1, 1, 9, 3);     // Índice
+    recuadro(9, 1, 67, 3);    // Nombre completo
+    recuadro(67, 1, 80, 3);   // Documento
+
+    // Dibujar columnas por estudiante
+    recuadro(1, 3, 9, cantidadEstudiantes + 4);
+    recuadro(9, 3, 67, cantidadEstudiantes + 4);
+    recuadro(67, 3, 80, cantidadEstudiantes + 4);
+    recuadro2(1, 1, 80, cantidadEstudiantes + 4);
+
+    // Títulos
+    gotoxy(2, 2); printf("Indice");
+    gotoxy(30, 2); printf("Nombre completo");
+    gotoxy(69, 2); printf("Documento");
+    gotoxy(9,3);printf("%c",197);
+    gotoxy(67,3);printf("%c",197);
+
+    for(int cont = 0; cont < cantidadEstudiantes; cont++){
+        char nombreCompleto[100];
+        if(estudiantes[cont].nombre2[0] != '\0'){
+            snprintf(nombreCompleto, sizeof(nombreCompleto), "%s %s %s %s", estudiantes[cont].nombre, estudiantes[cont].nombre2, estudiantes[cont].apellido, estudiantes[cont].apellido2);
         }else{
             snprintf(nombreCompleto, sizeof(nombreCompleto), "%s %s %s", estudiantes[cont].nombre, estudiantes[cont].apellido, estudiantes[cont].apellido2);
         }
-        printf("[%2d]   | %-*s | %-*d |\n", cont+1, anchoNombreCompleto, nombreCompleto, anchoDocumento, estudiantes[cont].docIdentidad);    
+
+        nombreCompleto[anchoNombreCompleto] = '\0';
+        // Mostrar datos alineados
+        gotoxy(3, cont + 4);
+        printf("[%2d]", cont + 1);
+
+        gotoxy(11, cont + 4);
+        printf("%-*.*s", anchoNombreCompleto, anchoNombreCompleto, nombreCompleto);
+
+        gotoxy(68, cont + 4);
+        printf("%-*d", anchoDocumento - 1, estudiantes[cont].docIdentidad); // -1 por seguridad
     }
     printf("\n");
 }
@@ -607,7 +720,8 @@ void modificarEstudiante(ESTUDIANTE estudiantes[], int cantidadEstudiantes){
     while(!salirModificar){
         system("cls");
         mostrarEstudiante(estudiantes, cantidadEstudiantes);
-        printf("Ingrese 0 para salir o\nIngrese el indice del estudiante a modificar (1 - %d): ", cantidadEstudiantes);
+        gotoxy(1, cantidadEstudiantes+6);printf("Ingrese 0 para volver al menu principal o");
+        gotoxy(1, cantidadEstudiantes+7);printf("Seleccione un estudiante (1 - %d): ", cantidadEstudiantes);
         scanf("%d", &indice);
         limpiarBuffer();
         if(indice==0) {
@@ -616,45 +730,49 @@ void modificarEstudiante(ESTUDIANTE estudiantes[], int cantidadEstudiantes){
             break;
         }
         while(indice<1 || indice>cantidadEstudiantes) {
-            printf("Indice invalido o fuera de rango! (1 - %d): ", cantidadEstudiantes);
+            gotoxy(1, cantidadEstudiantes+7);printf("Indice invalido o fuera de rango! (1 - %d): ", cantidadEstudiantes);
             scanf("%d", &indice);
-            limpiarBuffer();   
+            limpiarBuffer();
         }
         system("cls");
         while(opcion!=0){
-            printf("Dato a modificar: \n");
             menuCambiarEstudiante();
             scanf("%d",&opcion);
             limpiarBuffer();
             system("cls");
             switch(opcion){
                 case 1:
-                    printf("Primer nombre actual: %s\n", estudiantes[indice-1].nombre);
-                    printf("Nuevo nombre: ");
+                    recuadro2(14,10,66,13);
+                    gotoxy(16,11);printf("Primer nombre actual: %s\n", estudiantes[indice-1].nombre);
+                    gotoxy(16,12);printf("Nuevo nombre: ");
                     leerLinea(estudiantes[indice-1].nombre, sizeof(estudiantes[indice-1].nombre));
                     system("cls");
                     break;
                 case 2:
-                    printf("Segundo nombre actual: %s\n", estudiantes[indice-1].nombre2);
-                    printf("Nuevo segundo nombre: ");
+                    recuadro2(14,10,66,12);
+                    gotoxy(16,11);printf("Segundo nombre actual: %s\n", estudiantes[indice-1].nombre2);
+                    gotoxy(16,12);printf("Nuevo segundo nombre: ");
                     leerLinea(estudiantes[indice-1].nombre2, sizeof(estudiantes[indice-1].nombre2));
                     system("cls");
                     break;
                 case 3:
-                    printf("Primer apellido actual: %s\n", estudiantes[indice-1].apellido);
-                    printf("Nuevo apellido: ");
+                    recuadro2(14,10,66,12);
+                    gotoxy(16,11);printf("Primer apellido actual: %s\n", estudiantes[indice-1].apellido);
+                    gotoxy(16,12);printf("Nuevo apellido: ");
                     leerLinea(estudiantes[indice-1].apellido, sizeof(estudiantes[indice-1].apellido));
                     system("cls");
                     break;
                 case 4:
-                    printf("Segundo apellido actual: %s\n", estudiantes[indice-1].apellido2);
-                    printf("Nuevo segundo apellido: ");
+                    recuadro2(14,10,66,12);
+                    gotoxy(16,11);printf("Segundo apellido actual: %s\n", estudiantes[indice-1].apellido2);
+                    gotoxy(16,12);printf("Nuevo segundo apellido: ");
                     leerLinea(estudiantes[indice-1].apellido2, sizeof(estudiantes[indice-1].apellido2));
                     system("cls");
                     break;
                 case 5:
-                    printf("Documento actual: %d\n", estudiantes[indice-1].docIdentidad);
-                    printf("Nuevo documento: ");
+                    recuadro2(14,10,66,12);
+                    gotoxy(16,11);printf("Documento actual: %d\n", estudiantes[indice-1].docIdentidad);
+                    gotoxy(16,12);printf("Nuevo documento: ");
                     scanf(" %d", &estudiantes[indice-1].docIdentidad);
                     system("cls");
                     limpiarBuffer();
@@ -662,12 +780,12 @@ void modificarEstudiante(ESTUDIANTE estudiantes[], int cantidadEstudiantes){
                 case 0:
                     break;
                 default:
-                    printf("La opcion no es valida!\n\n");
+                    gotoxy(16,14);printf("La opcion no es valida!\n\n");
             }
         }
-        
+
     }
-    
+
 }
 void eliminarEstudiante(ESTUDIANTE estudiantes[], int *cantidadEstudiantes){
     int eliminar;
@@ -678,7 +796,7 @@ void eliminarEstudiante(ESTUDIANTE estudiantes[], int *cantidadEstudiantes){
     while(1){
         system("cls");
         mostrarEstudiante(estudiantes, *cantidadEstudiantes);
-        printf("\nIngrese el indice del estudiante que desea eliminar: ");
+        gotoxy(1, *cantidadEstudiantes+6);printf("\nIngrese el indice del estudiante que desea eliminar: ");
         scanf("%d", &eliminar);
         eliminar--;
         system("cls");
@@ -690,9 +808,9 @@ void eliminarEstudiante(ESTUDIANTE estudiantes[], int *cantidadEstudiantes){
                 printf("Estudiante eliminado correctamente.\n");
                 break;
             } else {
-                printf("Posicion invalida! intentelo nuevamente.\n\n");
+                gotoxy(1, *cantidadEstudiantes+6);printf("Posicion invalida! intentelo nuevamente.\n\n");
         }
-    }  
+    }
 }
 //CRUD INFORMES
 void crearInformes(ESTUDIANTE estudiantes[], int cantidadEstudiantes) {
@@ -726,14 +844,19 @@ void crearInformes(ESTUDIANTE estudiantes[], int cantidadEstudiantes) {
                 system("pause");
                 break;
             case 2: // Crear uno específico
+                if(cantidadInformes >= maxInformes){
+                    printf("Limite maximo de informes alcanzado.\n");
+                    system("pause");
+                    break;
+                }
                 system("cls");
                 mostrarEstudiante(estudiantes, cantidadEstudiantes);
-                printf("Ingrese el indice del estudiante (1 - %d): ", cantidadEstudiantes);
+                gotoxy(1, cantidadEstudiantes+6);printf("Ingrese el indice del estudiante (1 - %d): ", cantidadEstudiantes);
                 scanf("%d", &indice);
                 limpiarBuffer();
 
                 while(indice < 1 || indice > cantidadEstudiantes){
-                    printf("Indice invalido! Ingrese un numero entre 1 y %d: ", cantidadEstudiantes);
+                    gotoxy(1, cantidadEstudiantes+7); printf("Indice invalido! Ingrese un numero entre 1 y %d: ", cantidadEstudiantes);
                     scanf("%d", &indice);
                     limpiarBuffer();
                 }
@@ -741,20 +864,18 @@ void crearInformes(ESTUDIANTE estudiantes[], int cantidadEstudiantes) {
                     system("cls");
                     break;
                 }
-                if(cantidadInformes >= maxInformes){
-                    printf("Limite maximo de informes alcanzado.\n");
-                    system("pause");
-                    break;
-                }
                 system("cls");
+                recuadro(11,10,45,12);
+                recuadro(45,10,66,12);
+                recuadro2(11,10,66,16);
                 INFORME nuevo;
                 nuevo.numeroEstudiante = indice;
-                printf("Fecha del informe (dd/mm/yyyy): ");
-                leerLinea(fecha, sizeof(fecha));
+                gotoxy(13,11);printf("Fecha del informe (dd/mm/yyyy): ");
+                gotoxy(13,13);printf("Observaciones(Presione Enter si no tiene):");
+                gotoxy(47,11);leerLinea(fecha, sizeof(fecha));
                 limpiarBuffer();
                 strcpy(nuevo.fecha, fecha);
-                printf("Observaciones(Presione Enter si no tiene): ");
-                leerLinea(observacion, sizeof(observacion));
+                gotoxy(13,14);leerLinea(observacion, sizeof(observacion));
                 strcpy(nuevo.observaciones, observacion);
                 nuevo.estudiantes = estudiantes[indice - 1];
                 informes[cantidadInformes++] = nuevo;
@@ -789,7 +910,7 @@ void mostrarInformes(int indice){
     recuadro(bordeIzquierdo,8,bordeDerecho,10);
     gotoxy(bordeIzquierdo+2,9);printf("ASIGNATURA: ");
     recuadro(40,8,bordeDerecho,15);gotoxy(42,9);printf("NOTA FINAL: ");
-    //Apartado 
+    //Apartado
     recuadro(bordeIzquierdo,10,bordeDerecho,15);
     gotoxy(bordeIzquierdo+2,11);printf("Programacion"); gotoxy(42,11);notaInforme(informes[indice].estudiantes.asignaturas.programacion);
     gotoxy(bordeIzquierdo+2,12);printf("Matematicas"); gotoxy(42,12);notaInforme(informes[indice].estudiantes.asignaturas.matematicas);
@@ -807,8 +928,8 @@ void mostrarInformes(int indice){
     recuadro2(bordeIzquierdo,2,bordeDerecho,22);
     gotoxy(bordeIzquierdo,8);printf("%c",186);
     gotoxy(40,8);printf("%c",194);
-    gotoxy(40,10);printf("%c",197); 
-    gotoxy(40,15);printf("%c",197); 
+    gotoxy(40,10);printf("%c",197);
+    gotoxy(40,15);printf("%c",197);
     gotoxy(40,17);printf("%c",193);
     gotoxy(1,24);system("pause");
 }
@@ -832,7 +953,6 @@ void eliminarInformes(){
                     system("pause");
                 }
                 break;
-
             case 2: // Eliminar uno
                 if(cantidadInformes == 0){
                     system("cls");
@@ -841,15 +961,17 @@ void eliminarInformes(){
                     break;
                 }
                 system("cls");
-                printf("\nHay %d informes creados:\n", cantidadInformes);
+                recuadro(1,1,50,3);
+                recuadro2(1,1,50,cantidadInformes+4);
+                gotoxy(17,2);printf("Informes creados",1);
                 for(int cont=0; cont<cantidadInformes; cont++){
-                    printf("%d. Informe #%d - %s %s\n", cont+1, cont+1, informes[cont].estudiantes.nombre, informes[cont].estudiantes.apellido);
+                    gotoxy(2,cont+4);printf("%d. Informe #%d - %s %s\n", cont+1, cont+1, informes[cont].estudiantes.nombre, informes[cont].estudiantes.apellido);
                 }
-                printf("\nSeleccione el informe a eliminar (1 - %d): ", cantidadInformes);
+                gotoxy(2,cantidadInformes+5);printf("Seleccione el informe a eliminar (1 - %d): ", cantidadInformes);
                 scanf("%d", &indice);
                 limpiarBuffer();
                 if(indice < 1 || indice > cantidadInformes){
-                    printf("indice invalido!\n");
+                    gotoxy(1,cantidadInformes+6);printf("indice invalido!\n");
                 }else{
                     for(int cont=indice-1; cont<cantidadInformes-1; cont++){
                         informes[cont] = informes[cont + 1];
@@ -873,9 +995,11 @@ void eliminarInformes(){
 //MAIN
 int main(){
     system("cls");
-    system("mode con: cols=80 lines=25");
+    system("mode con: cols=82 lines=31");
     int opcion1=1,opcion2,opcion3,opcion4, opcionEstudiante, salirNotas, opcionInformes;
-    ESTUDIANTE estudiantes[maxEstudiantes]; 
+    ESTUDIANTE estudiantes[maxEstudiantes];
+    barraCargaConMensajes(); // Carga de datos al iniciar el programa
+    system("cls");
     int cantidadEstudiantes = leerArchivoEstudiantes(estudiantes);
     cantidadInformes=leerInformes(); // Numero actual de estudiantes guardados
     while(opcion1!=0){
@@ -892,33 +1016,35 @@ int main(){
                     limpiarBuffer();
                     system("cls");
                     switch (opcion2){
-                        case 1: 
-                            crearEstudiante(estudiantes, &cantidadEstudiantes); 
+                        case 1:
+                            crearEstudiante(estudiantes, &cantidadEstudiantes);
                             guardarEstudiantes(estudiantes, cantidadEstudiantes);
                             break;
                         case 2:
+                            system("cls");
                             mostrarEstudiante(estudiantes, cantidadEstudiantes);
+                            gotoxy(1, cantidadEstudiantes+6);
                             system("pause");
                             system("cls");
                             break;
-                        case 3: 
-                            modificarEstudiante(estudiantes, cantidadEstudiantes); 
+                        case 3:
+                            modificarEstudiante(estudiantes, cantidadEstudiantes);
                             guardarEstudiantes(estudiantes, cantidadEstudiantes);
                             break;
-                        case 4: 
+                        case 4:
                             eliminarEstudiante(estudiantes, &cantidadEstudiantes);
                             guardarEstudiantes(estudiantes, cantidadEstudiantes);
                             break;
-                        case 0: 
+                        case 0:
                             break;
-                        default: 
-                            printf("La opcion no es valida!\n\n"); 
+                        default:
+                            printf("La opcion no es valida!\n\n");
                             break;
                         }
                     }
                     break;
             case 2:
-                salirNotas=0;     
+                salirNotas=0;
                 if(cantidadEstudiantes==0){
                 printf("Primero debes crear estudiantes.\n\n");
                 break;
@@ -926,14 +1052,15 @@ int main(){
                 while(!salirNotas){
                     system("cls");
                     mostrarEstudiante(estudiantes, cantidadEstudiantes);
-                    printf("Ingrese 0 para volver al menu principal o\nSeleccione un estudiante (1 - %d): ", cantidadEstudiantes);
+                    gotoxy(1, cantidadEstudiantes+6);printf("Ingrese 0 para volver al menu principal o");
+                    gotoxy(1, cantidadEstudiantes+7);printf("Seleccione un estudiante (1 - %d): ", cantidadEstudiantes);
                     scanf("%d", &opcionEstudiante);
                     limpiarBuffer();
                     if(opcionEstudiante==0){
                         salirNotas = 1;
                         system("cls");
                         break;
-                    }  
+                    }
                     while (opcionEstudiante < 1 || opcionEstudiante > cantidadEstudiantes){
                         printf("Indice invalido. Ingrese un valor entre 1 y %d: ", cantidadEstudiantes);
                         scanf("%d", &opcionEstudiante);
@@ -947,27 +1074,27 @@ int main(){
                         limpiarBuffer();
                         system("cls");
                         switch (opcion3){
-                            case 1: 
+                            case 1:
                                 crearNotas(&estudiantes[opcionEstudiante-1].asignaturas);
                                 guardarEstudiantes(estudiantes, cantidadEstudiantes);
                                 break;
-                            case 2: 
+                            case 2:
                                 mostrarNotas(estudiantes[opcionEstudiante-1].asignaturas);
-                                system("pause");
+                                gotoxy(15,19);system("pause");
                                 system("cls");
                                 break;
-                            case 3: 
+                            case 3:
                                 modificarNotas(&estudiantes[opcionEstudiante-1].asignaturas);
                                 guardarEstudiantes(estudiantes, cantidadEstudiantes);
                                 break;
-                            case 4: 
+                            case 4:
                                 eliminarNotas(&estudiantes[opcionEstudiante-1].asignaturas);
                                 guardarEstudiantes(estudiantes, cantidadEstudiantes);
                                 break;
-                            case 0: 
+                            case 0:
                                 break;
                             default:
-                                printf("La opcion no es valida!\n\n"); 
+                                printf("La opcion no es valida!\n\n");
                                 break;
                             }
                         }
@@ -983,10 +1110,9 @@ int main(){
                     limpiarBuffer();
                     system("cls");
                     switch (opcion4){
-                        case 1: 
+                        case 1:
                             crearInformes(estudiantes, cantidadEstudiantes);
                             guardarInformes();
-                            guardarInformesTXT();
                             break;
                         case 2:
                             if (cantidadInformes == 0) {
@@ -1038,19 +1164,19 @@ int main(){
                             eliminarInformes();
                             guardarInformes();
                             break;
-                        case 0: 
+                        case 0:
                             break;
                         default:
-                            printf("La opcion no es valida!\n\n"); 
+                            printf("La opcion no es valida!\n\n");
                             break;
                     }
                 }
-                break;  
+                break;
             case 0: printf("\nHas salido del programa, Adios!"); break;
             default: printf("La opcion no es valida!\n\n"); break;
         }
     }
-    return 0; 
+    return 0;
 }
 
 /*git add .
