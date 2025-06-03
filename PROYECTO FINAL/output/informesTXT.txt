@@ -1,0 +1,33 @@
+Informe #1
+Fecha: 05/05/2025
+Estudiante: Cristian  Gomez Arenas
+Observaciones: Ninguna
+Asignaturas y Notas:
+  - Programacion: 4.5
+  - Matematicas: 4.8
+  - Pensamiento Logico: 4.2
+  - Introduccion a las TICS: 4.4
+----------------------------
+
+Informe #2
+Fecha: 05/05/2025
+Estudiante: Daniel  Mosquera Lopez
+Observaciones: Ninguna
+Asignaturas y Notas:
+  - Programacion: Sin nota
+  - Matematicas: Sin nota
+  - Pensamiento Logico: Sin nota
+  - Introduccion a las TICS: Sin nota
+----------------------------
+
+Informe #3
+Fecha: 05/05/2025
+Estudiante: Carlos Andres Giraldo Quintero
+Observaciones: Ninguna
+Asignaturas y Notas:
+  - Programacion: Sin nota
+  - Matematicas: Sin nota
+  - Pensamiento Logico: Sin nota
+  - Introduccion a las TICS: Sin nota
+----------------------------
+
